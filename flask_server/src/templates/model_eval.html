@@ -1,0 +1,127 @@
+{% extends "base.html"%}
+
+{% block title %}
+Применение модели
+{% endblock %}
+
+{% block body %}
+<p>Обучена модель
+    {% if model.get_name() == "GradientBoostingMSE" %}
+    <b>Gradient Boosting Regression</b>.
+    {% else %}
+    <b>Random Forest Regression</b>.
+    {% endif %}
+</p>
+<p>
+    Гиперпараметры: <ul>
+    <li>
+        Количество деревьев в ансамбле: <b>{{ model.get_n_estimators() }}</b>
+    </li>
+    <li>
+        Максимальная глубина деревьев:
+        {% if model.get_max_depth() == None %}
+        <b>неограничена</b>
+        {% else %}
+        <b>{{model.get_max_depth()}}</b>
+        {% endif %}
+    </li>
+    <li>
+        Размер подмножества признаков: <b>{{ model.get_feature_subsample_size() }}</b>
+    </li>
+    {% if model.get_name() == "GradientBoostingMSE" %}
+    <li>
+        Коэффициент скорости обучения: <b>{{ model.get_learning_rate() }}</b>
+    </li>
+    {% endif %}
+    </ul>
+</p>
+
+<p>Для обучения использовался датасет: <b>{{ train_path.split("/")[-1] }}</b> &nbsp;
+    <button class="btn btn-primary collapsed btn-sm" type="button" data-toggle="collapse" data-target="#train_table" aria-expanded="false" aria-controls="train_table">
+    Показать таблицу
+    </button>
+</p>
+
+
+<div class="collapse" id="train_table">
+    <div class="card">
+    <div class="card-body">
+    <div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            {% for col in train.head().columns.values %}
+            <th scope="col">{{col}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in list(train.head().values.tolist()) %}
+        <tr>
+            {% for el in row %}
+            <td>{{el}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    Размер таблицы: {{ train.shape }}
+    </div>
+    </div>
+    </div>
+</div>
+
+{% if val is not none %}
+<p>Для валидации использовался датасет: <b>{{ val_path.split("/")[-1] }}</b> &nbsp;
+    <button class="btn btn-primary collapsed btn-sm" type="button" data-toggle="collapse" data-target="#val_table" aria-expanded="false" aria-controls="val_table">
+    Показать таблицу
+    </button>
+</p>
+
+<div class="collapse" id="val_table">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    {% for col in val.head().columns.values %}
+                    <th scope="col">{{col}}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in list(val.head().values.tolist()) %}
+                <tr>
+                    {% for el in row %}
+                    <td>{{el}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            Размер таблицы: {{ val.shape }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<p>
+    Модель достигает RMSE: <b>{{ history['train_score'][-1]|round|int }}</b> на обучении
+    {% if val is not none %}
+    и <b>{{ history['val_score'][-1]|round|int }}</b> на валидации
+    {% endif %}
+</p>
+
+<p>
+    График кривой обучения:
+    <div class="card">
+    <div class="card-body">
+        {{ plot|safe }}
+    </div>
+    </div>
+</p>
+
+
+{% endblock %}
