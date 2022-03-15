@@ -1,0 +1,87 @@
+{% extends "base.html"%}
+
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% block body %}
+<form action="{{ url_for('model_training') }}" method="post" enctype=multipart/form-data>
+    <div class="form-group">
+        <label for="algorithm">Алгоритм ансамблирования</label>
+        <select class="form-control" name="algorithm" id="algorithm" required>
+          <option>Gradient Boosting Regression</option>
+          <option>Random Forest Regression</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="n_estimators">Количество деревьев в ансамбле</label>
+        <input class="form-control" type="text" name="n_estimators" id="n_estimators" placeholder="целое число в диапозоне [1, 10000]"  aria-describedby="validation_n_estimators" >
+        {% if n_estimators is defined %}
+        <div id="validation_n_estimators" class="form-text">
+            <p class="text-danger"> *{{ n_estimators }} </p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="feature_subsample_size">Размерность подвыборки признаков для одного дерева</label>
+        <input class="form-control" type="text" name="feature_subsample_size" id="feature_subsample_size" placeholder="десятичное число в диапозоне (0, 1]"  aria-describedby="validation_feature_subsample_size" >
+        {% if feature_subsample_size is defined %}
+        <div id="validation_feature_subsample_size" class="form-text">
+            <p class="text-danger"> *{{ feature_subsample_size }} </p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="max_depth">Максимальная глубина деревьев</label>
+        <input class="form-control" type="text" name="max_depth" id="max_depth" placeholder="целое число больше 1; -1 для неограниченной глубины"  aria-describedby="validation_max_depth" >
+        {% if max_depth is defined %}
+        <div id="validation_max_depth" class="form-text">
+            <p class="text-danger"> *{{ max_depth }} </p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="learning_rate">Коэффициент скорости обучения (<i>используется в Gradient Boosting</i>)</label>
+        <input class="form-control" type="text" name="learning_rate" id="learning_rate" placeholder="десятичное число в диапозоне (0, 1]"  aria-describedby="validation_learning_rate">
+        {% if learning_rate is defined %}
+        <div id="validation_learning_rate" class="form-text">
+            <p class="text-danger"> *{{ learning_rate }} </p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="trainDataset">
+            Обучающая выборка (.csv)<br>
+            <i>*целевая переменная - "y"</i>
+        </label>
+        <input type="file" class="form-control-file" name="trainDataset" id="trainDataset" aria-describedby="validation_trainDataset" required>
+        {% if trainDataset is defined %}
+        <div id="validation_trainDataset" class="form-text">
+            <p class="text-danger"> *{{ trainDataset }} </p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="validationDataset">
+            Валидационная выборка (при необходимости) (.csv) <br>
+            <i>*целевая переменная - "y"</i>
+        </label>
+        <input type="file" class="form-control-file" name="validationDataset" id="validationDataset" aria-describedby="validation_validationDataset">
+        {% if validationDataset is defined %}
+        <div id="validation_validationDataset" class="form-text">
+            <p class="text-danger"> *{{ validationDataset }} </p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="row g-2">
+        <div class="col-md">
+            <button type="submit" class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Обучить модель</button>
+        </div>
+        <div class="col-md">
+            <div class="collapse" id="collapseExample">
+                <i><b>Модель обучается... Подождите...</b></i>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
