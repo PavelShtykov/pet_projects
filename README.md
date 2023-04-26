@@ -7,7 +7,7 @@
 
 ### [EM algorithm for recognizing noisy faces in photos](./em_algorithm/)
 
-### [Flask server for inference](./flask_server/)
+### [Flask server for models inference](./flask_server/)
 
 ### [SVM](./svm_notebook/)
 
@@ -21,6 +21,6 @@
 
 ### [EM алгоритм для распознавание зашумленных лиц на фотографии](./em_algorithm/)
 
-### [Flask сервер для инференса](./flask_server/)
+### [Flask сервер для инференса моделей](./flask_server/)
 
 ### [SVM](./svm_notebook/) 
